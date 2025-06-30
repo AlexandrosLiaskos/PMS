@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -27,6 +28,8 @@ export function ProjectList({ projects, workspaceId }: ProjectListProps) {
   const [deletingProject, setDeletingProject] = useState<Project | null>(null);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
+  const router = useRouter();
+
   // No longer fetching projects here, they are passed as a prop
   // No longer managing new project state here, that's handled by CreateProjectForm
 
@@ -49,7 +52,7 @@ export function ProjectList({ projects, workspaceId }: ProjectListProps) {
               </CardHeader>
               <CardContent className="p-4 flex items-center gap-2 overflow-visible">
                 <InteractiveHoverButton
-                  onClick={() => alert(`Navigating to project: ${project.name}`)} // Placeholder for navigation
+                  onClick={() => router.push(`/workspaces/${project.workspaceId}/projects/${project.id}`)}
                   className="z-[1]"
                 >
                   View Details

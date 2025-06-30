@@ -1,11 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import { db } from "@/db/turso";
-import { projects, workspaces, users } from "@/db/schema";
+import { reminders, projects, workspaces, users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string; reminderId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ work
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId, projectId } = await params;
+  const { workspaceId, projectId, reminderId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));
 
@@ -32,10 +32,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ work
     return NextResponse.json({ message: "Project not found" }, { status: 404 });
   }
 
-  return NextResponse.json(project);
+  const [reminder] = await db.select().from(reminders).where(and(eq(reminders.id, reminderId), eq(reminders.projectId, projectId)));
+
+  if (!reminder) {
+    return NextResponse.json({ message: "Reminder not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(reminder);
 }
 
-export async function PUT(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string }> }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string; reminderId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -48,7 +54,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ work
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId, projectId } = await params;
+  const { workspaceId, projectId, reminderId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));
 
@@ -62,25 +68,33 @@ export async function PUT(request: Request, { params }: { params: Promise<{ work
     return NextResponse.json({ message: "Project not found" }, { status: 404 });
   }
 
-  const { name, description } = await request.json();
+  const [reminder] = await db.select().from(reminders).where(and(eq(reminders.id, reminderId), eq(reminders.projectId, projectId)));
+
+  if (!reminder) {
+    return NextResponse.json({ message: "Reminder not found" }, { status: 404 });
+  }
+
+  const { title, description, dueDate, status } = await request.json();
 
   try {
-    const [updatedProject] = await db.update(projects)
+    const [updatedReminder] = await db.update(reminders)
       .set({
-        name: name || project.name,
-        description: description !== undefined ? description : project.description,
+        title: title || reminder.title,
+        description: description !== undefined ? description : reminder.description,
+        dueDate: dueDate || reminder.dueDate,
+        status: status || reminder.status,
       })
-      .where(eq(projects.id, projectId))
+      .where(eq(reminders.id, reminderId))
       .returning();
 
-    return NextResponse.json(updatedProject);
+    return NextResponse.json(updatedReminder);
   } catch (error) {
-    console.error("Error updating project:", error);
-    return NextResponse.json({ message: "Error updating project" }, { status: 500 });
+    console.error("Error updating reminder:", error);
+    return NextResponse.json({ message: "Error updating reminder" }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string }> }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string; reminderId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -93,7 +107,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ w
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId, projectId } = await params;
+  const { workspaceId, projectId, reminderId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));
 
@@ -101,18 +115,24 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ w
     return NextResponse.json({ message: "Workspace not found or not authorized" }, { status: 404 });
   }
 
+  const [project] = await db.select().from(projects).where(and(eq(projects.id, projectId), eq(projects.workspaceId, workspaceId)));
+
+  if (!project) {
+    return NextResponse.json({ message: "Project not found" }, { status: 404 });
+  }
+
   try {
-    const [deletedProject] = await db.delete(projects)
-      .where(and(eq(projects.id, projectId), eq(projects.workspaceId, workspaceId)))
+    const [deletedReminder] = await db.delete(reminders)
+      .where(and(eq(reminders.id, reminderId), eq(reminders.projectId, projectId)))
       .returning();
 
-    if (!deletedProject) {
-      return NextResponse.json({ message: "Project not found or not authorized" }, { status: 404 });
+    if (!deletedReminder) {
+      return NextResponse.json({ message: "Reminder not found or not authorized" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Project deleted successfully" });
+    return NextResponse.json({ message: "Reminder deleted successfully" });
   } catch (error) {
-    console.error("Error deleting project:", error);
-    return NextResponse.json({ message: "Error deleting project" }, { status: 500 });
+    console.error("Error deleting reminder:", error);
+    return NextResponse.json({ message: "Error deleting reminder" }, { status: 500 });
   }
 }

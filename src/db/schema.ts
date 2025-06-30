@@ -81,3 +81,57 @@ export const projects = sqliteTable("project", {
     .notNull()
     .references(() => workspaces.id, { onDelete: "cascade" }),
 });
+
+export const events = sqliteTable("event", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  description: text("description"),
+  date: integer("date", { mode: "timestamp_ms" }).notNull(),
+  status: text("status").default("upcoming"),
+  projectId: text("projectId")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+});
+
+export const tasks = sqliteTable("task", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  description: text("description"),
+  deadline: integer("deadline", { mode: "timestamp_ms" }),
+  status: text("status").default("pending"),
+  assignedTo: text("assignedTo")
+    .references(() => users.id, { onDelete: "set null" }),
+  projectId: text("projectId")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+});
+
+export const reminders = sqliteTable("reminder", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  description: text("description"),
+  dueDate: integer("dueDate", { mode: "timestamp_ms" }).notNull(),
+  status: text("status").default("active"),
+  projectId: text("projectId")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+});
+
+export const projectContent = sqliteTable("projectContent", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  type: text("type").notNull().default("README"), // README or knowledge base file
+  title: text("title"), // for knowledge base files
+  content: text("content").notNull().default(""), // markdown content
+  path: text("path"), // for file structure in knowledge base
+  projectId: text("projectId")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+});

@@ -1,11 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import { db } from "@/db/turso";
-import { projects, workspaces, users } from "@/db/schema";
+import { events, projects, workspaces, users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string; eventId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ work
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId, projectId } = await params;
+  const { workspaceId, projectId, eventId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));
 
@@ -32,10 +32,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ work
     return NextResponse.json({ message: "Project not found" }, { status: 404 });
   }
 
-  return NextResponse.json(project);
+  const [event] = await db.select().from(events).where(and(eq(events.id, eventId), eq(events.projectId, projectId)));
+
+  if (!event) {
+    return NextResponse.json({ message: "Event not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(event);
 }
 
-export async function PUT(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string }> }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string; eventId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -48,7 +54,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ work
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId, projectId } = await params;
+  const { workspaceId, projectId, eventId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));
 
@@ -62,25 +68,33 @@ export async function PUT(request: Request, { params }: { params: Promise<{ work
     return NextResponse.json({ message: "Project not found" }, { status: 404 });
   }
 
-  const { name, description } = await request.json();
+  const [event] = await db.select().from(events).where(and(eq(events.id, eventId), eq(events.projectId, projectId)));
+
+  if (!event) {
+    return NextResponse.json({ message: "Event not found" }, { status: 404 });
+  }
+
+  const { title, description, date, status } = await request.json();
 
   try {
-    const [updatedProject] = await db.update(projects)
+    const [updatedEvent] = await db.update(events)
       .set({
-        name: name || project.name,
-        description: description !== undefined ? description : project.description,
+        title: title || event.title,
+        description: description !== undefined ? description : event.description,
+        date: date || event.date,
+        status: status || event.status,
       })
-      .where(eq(projects.id, projectId))
+      .where(eq(events.id, eventId))
       .returning();
 
-    return NextResponse.json(updatedProject);
+    return NextResponse.json(updatedEvent);
   } catch (error) {
-    console.error("Error updating project:", error);
-    return NextResponse.json({ message: "Error updating project" }, { status: 500 });
+    console.error("Error updating event:", error);
+    return NextResponse.json({ message: "Error updating event" }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string }> }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string; eventId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -93,7 +107,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ w
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId, projectId } = await params;
+  const { workspaceId, projectId, eventId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));
 
@@ -101,18 +115,24 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ w
     return NextResponse.json({ message: "Workspace not found or not authorized" }, { status: 404 });
   }
 
+  const [project] = await db.select().from(projects).where(and(eq(projects.id, projectId), eq(projects.workspaceId, workspaceId)));
+
+  if (!project) {
+    return NextResponse.json({ message: "Project not found" }, { status: 404 });
+  }
+
   try {
-    const [deletedProject] = await db.delete(projects)
-      .where(and(eq(projects.id, projectId), eq(projects.workspaceId, workspaceId)))
+    const [deletedEvent] = await db.delete(events)
+      .where(and(eq(events.id, eventId), eq(events.projectId, projectId)))
       .returning();
 
-    if (!deletedProject) {
-      return NextResponse.json({ message: "Project not found or not authorized" }, { status: 404 });
+    if (!deletedEvent) {
+      return NextResponse.json({ message: "Event not found or not authorized" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Project deleted successfully" });
+    return NextResponse.json({ message: "Event deleted successfully" });
   } catch (error) {
-    console.error("Error deleting project:", error);
-    return NextResponse.json({ message: "Error deleting project" }, { status: 500 });
+    console.error("Error deleting event:", error);
+    return NextResponse.json({ message: "Error deleting event" }, { status: 500 });
   }
 }
