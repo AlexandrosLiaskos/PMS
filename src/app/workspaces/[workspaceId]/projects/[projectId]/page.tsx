@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ProjectPage } from "@/components/ProjectPage";
 
 interface Project {
@@ -45,25 +46,30 @@ interface Project {
   }>;
 }
 
-export default function ProjectDetailPage({
-  params,
-}: {
-  params: { workspaceId: string; projectId: string };
-}) {
+export default function ProjectDetailPage() {
+  const pathname = usePathname();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [resolvedParams, setResolvedParams] = useState<{ workspaceId: string; projectId: string } | null>(null);
 
+  // Access route parameters using usePathname to avoid synchronous access warnings
   useEffect(() => {
-    // Resolve params asynchronously after component mount with a slight delay
-    // Note: Using setTimeout within useEffect to defer parameter access beyond initial render,
-    // avoiding synchronous access warnings in Next.js dev mode.
-    const timer = setTimeout(() => {
-      setResolvedParams(params);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [params]);
+    // Note: Using usePathname to derive route parameters dynamically from the URL path,
+    // which should be compatible with Next.js dev mode checks.
+    if (pathname) {
+      const pathSegments = pathname.split('/').filter(segment => segment);
+      // Assuming path structure is /workspaces/[workspaceId]/projects/[projectId]
+      if (pathSegments.length >= 4 && pathSegments[0] === 'workspaces' && pathSegments[2] === 'projects') {
+        const workspaceId = pathSegments[1];
+        const projectId = pathSegments[3];
+        setResolvedParams({ workspaceId, projectId });
+      } else {
+        setError("Invalid route structure or missing parameters");
+        setLoading(false);
+      }
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (!resolvedParams) return;
