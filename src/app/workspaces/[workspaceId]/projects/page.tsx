@@ -8,9 +8,9 @@ import { CreateProjectForm } from "@/components/CreateProjectForm"; // We will c
 import { notFound } from "next/navigation";
 
 interface ProjectsPageProps {
-  params: {
+  params: Promise<{
     workspaceId: string;
-  };
+  }>;
 }
 
 export default async function ProjectsPage({ params }: ProjectsPageProps) {
@@ -31,7 +31,7 @@ export default async function ProjectsPage({ params }: ProjectsPageProps) {
     notFound();
   }
 
-  const { workspaceId } = params;
+  const { workspaceId } = await params;
   console.log("ProjectsPage: workspaceId", workspaceId);
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));

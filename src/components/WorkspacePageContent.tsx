@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import ProjectList from "@/components/ProjectList";
+import { ProjectList } from "@/components/ProjectList";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import { WorkspaceSidePanel } from "@/components/WorkspaceSidePanel";
 

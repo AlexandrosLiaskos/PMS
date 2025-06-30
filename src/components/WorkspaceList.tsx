@@ -115,14 +115,14 @@ export default function WorkspaceList() {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6">Your Workspaces</h2>
+      <h2 className="text-3xl font-bold mb-6">Workspaces</h2>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="mb-8">Create New Workspace</Button>
+          <Button className="mb-8">New Workspace</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Workspace</DialogTitle>
+            <DialogTitle>New Workspace</DialogTitle>
             <DialogDescription>
               Enter a name for your new workspace.
             </DialogDescription>
@@ -142,7 +142,7 @@ export default function WorkspaceList() {
         </DialogContent>
       </Dialog>
 
-      
+
       {workspaces.length === 0 ? (
         <p>No workspaces found. Create one above!</p>
       ) : (

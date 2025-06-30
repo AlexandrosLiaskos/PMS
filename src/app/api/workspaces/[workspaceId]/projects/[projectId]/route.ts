@@ -5,7 +5,7 @@ import { projects, workspaces, users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function PUT(request: Request, { params }: { params: { workspaceId: string, projectId: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ workspaceId: string; projectId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -18,7 +18,7 @@ export async function PUT(request: Request, { params }: { params: { workspaceId:
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId, projectId } = params;
+  const { workspaceId, projectId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));
 
@@ -26,30 +26,16 @@ export async function PUT(request: Request, { params }: { params: { workspaceId:
     return NextResponse.json({ message: "Workspace not found or not authorized" }, { status: 404 });
   }
 
-  const { name, description } = await request.json();
+  const [project] = await db.select().from(projects).where(and(eq(projects.id, projectId), eq(projects.workspaceId, workspaceId)));
 
-  if (!name) {
-    return NextResponse.json({ message: "Name is required" }, { status: 400 });
+  if (!project) {
+    return NextResponse.json({ message: "Project not found" }, { status: 404 });
   }
 
-  try {
-    const [updatedProject] = await db.update(projects)
-      .set({ name, description })
-      .where(and(eq(projects.id, projectId), eq(projects.workspaceId, workspaceId)))
-      .returning();
-
-    if (!updatedProject) {
-      return NextResponse.json({ message: "Project not found or not authorized" }, { status: 404 });
-    }
-
-    return NextResponse.json(updatedProject);
-  } catch (error) {
-    console.error("Error updating project:", error);
-    return NextResponse.json({ message: "Error updating project" }, { status: 500 });
-  }
+  return NextResponse.json(project);
 }
 
-export async function DELETE(request: Request, { params }: { params: { workspaceId: string, projectId: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ workspaceId: string, projectId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -62,7 +48,7 @@ export async function DELETE(request: Request, { params }: { params: { workspace
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId, projectId } = params;
+  const { workspaceId, projectId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)));
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,7 +24,7 @@ interface ProjectListProps {
   projects: Project[]; // Changed to receive projects as prop
 }
 
-export default function ProjectList({ projects }: ProjectListProps) {
+export function ProjectList({ projects }: ProjectListProps) {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [deletingProject, setDeletingProject] = useState<Project | null>(null);
 

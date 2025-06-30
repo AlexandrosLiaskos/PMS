@@ -5,7 +5,7 @@ import { projects, workspaces, users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: { workspaceId: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ workspaceId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -31,7 +31,7 @@ export async function GET(request: Request, { params }: { params: { workspaceId:
   return NextResponse.json(workspaceProjects);
 }
 
-export async function POST(request: Request, { params }: { params: { workspaceId: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ workspaceId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {

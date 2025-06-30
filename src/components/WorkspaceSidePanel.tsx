@@ -3,7 +3,16 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+/* Removed unused import of BorderBeam to fix eslint error */
+// import { BorderBeam } from "@/components/magicui/border-beam";
+/* Replaced MagicCard with standard Card to remove animation */
+// import { MagicCard } from "@/components/magicui/magic-card";
+import { Card } from "@/components/ui/card";
+/* Removed unused imports to fix eslint errors */
+// import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
+// import { cn } from "@/lib/utils";
+import { User, Crown } from "lucide-react";
 
 interface WorkspaceSidePanelProps {
   workspaceId: string;
@@ -37,18 +46,43 @@ export function WorkspaceSidePanel({ workspaceId, workspaceName }: WorkspaceSide
 
   return (
     <div className="w-56 p-4 border-r border-gray-200 dark:border-gray-800">
-      <div className="mb-6 flex flex-row items-center space-x-4 pb-2">
-        <Avatar className="h-16 w-16">
-          <AvatarImage src={session?.user?.image || "/avatars/default-avatar.png"} alt={session?.user?.name || "User Avatar"} />
-          <AvatarFallback>{session?.user?.name?.charAt(0) || "U"}</AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col">
-          <CardTitle className="text-xl">{session?.user?.name || "Guest"}</CardTitle>
-          
-        </div>
-      </div>
+      <Card className="w-full mb-8 border-0 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 rounded-none">
+        {/* Replaced MagicCard with standard Card to remove animation, added z-axis zoom effect on hover */}
+        <CardHeader className="relative">
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Avatar className="h-16 w-16 ring-2 ring-primary/20 transition-all duration-300 hover:ring-primary/40">
+                <AvatarImage src={session?.user?.image || "/avatars/default-avatar.png"} className="object-cover" />
+                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg font-bold">
+                  {session?.user?.name?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-1 -right-1 p-1 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full">
+                <Crown className="h-3 w-3 text-white" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="text-xl font-bold">
+                {session?.user?.name || "User"}
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex items-center space-x-1">
+              <User className="h-3 w-3" />
+              <span>Admin</span>
+            </div>
+            <div className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+              Online
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <Card className="mb-6 border border-gray-200 dark:border-gray-800 shadow-sm">
+      <Card className="mb-6 border-0 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 rounded-none">
+        {/* Replaced MagicCard with standard Card to remove animation, added z-axis zoom effect on hover */}
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Workspace</CardTitle>
         </CardHeader>
@@ -57,7 +91,8 @@ export function WorkspaceSidePanel({ workspaceId, workspaceName }: WorkspaceSide
         </CardContent>
       </Card>
 
-      <Card className="mb-6 border border-gray-200 dark:border-gray-800 shadow-sm">
+      <Card className="mb-6 border-0 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 rounded-none">
+        {/* Replaced MagicCard with standard Card to remove animation, added z-axis zoom effect on hover */}
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Statistics</CardTitle>
         </CardHeader>

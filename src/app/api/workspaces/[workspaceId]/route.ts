@@ -5,7 +5,7 @@ import { workspaces, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: { workspaceId: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ workspaceId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: { params: { workspaceId:
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId } = params;
+  const { workspaceId } = await params;
 
   const [workspace] = await db.select().from(workspaces).where(eq(workspaces.id, workspaceId));
 
@@ -30,7 +30,7 @@ export async function GET(request: Request, { params }: { params: { workspaceId:
 }
 
 
-export async function PUT(request: Request, { params }: { params: { workspaceId: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ workspaceId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -43,7 +43,7 @@ export async function PUT(request: Request, { params }: { params: { workspaceId:
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId } = params;
+  const { workspaceId } = await params;
   const { name } = await request.json();
 
   if (!name) {
@@ -68,7 +68,7 @@ export async function PUT(request: Request, { params }: { params: { workspaceId:
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { workspaceId: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ workspaceId: string }> }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user || !session.user.email) {
@@ -81,7 +81,7 @@ export async function DELETE(request: Request, { params }: { params: { workspace
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { workspaceId } = params;
+  const { workspaceId } = await params;
 
   try {
     const [deletedWorkspace] = await db.delete(workspaces)

@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
+import { BorderBeam } from "@/components/magicui/border-beam";
+import { cn } from "@/lib/utils";
 
 export default function DashboardStats() {
+  useSession();
   const [stats, setStats] = useState({
     workspaceCount: 0,
     projectCount: 0,
@@ -53,7 +58,8 @@ export default function DashboardStats() {
 
   if (loading) {
     return (
-      <Card className="w-full max-w-2xl mb-8">
+      <Card className="w-full mb-8 bg-gradient-to-br from-background via-background to-muted/20 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 rounded-none relative">
+        <BorderBeam colorFrom="#3B82F6" colorTo="#8B5CF6" borderWidth={2} size={100} duration={5} style={{ zIndex: 1000 }} />
         <CardHeader>
           <CardTitle>Loading Dashboard Stats...</CardTitle>
         </CardHeader>
@@ -66,7 +72,7 @@ export default function DashboardStats() {
 
   if (error) {
     return (
-      <Card className="w-full max-w-2xl mb-8">
+      <Card className="w-full mb-8 bg-gradient-to-br from-background via-background to-muted/20 backdrop-blur-sm border-2 border-border/50 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 hover:border-primary/50">
         <CardHeader>
           <CardTitle className="text-red-500">Error Loading Stats</CardTitle>
         </CardHeader>
@@ -77,26 +83,45 @@ export default function DashboardStats() {
     );
   }
 
-  return (
-    <Card className="w-full mb-6 border border-gray-200 dark:border-gray-800 shadow-sm">
-      <CardHeader className="pb-2">
+    return (
+      <Card className="w-full mb-6 bg-gradient-to-br from-background via-background to-muted/20 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 rounded-none relative">
+        <BorderBeam colorFrom="#3B82F6" colorTo="#8B5CF6" borderWidth={2} size={100} duration={5} style={{ zIndex: 1000 }} />
+        <CardHeader className="pb-2">
         <CardTitle className="text-lg">Statistics</CardTitle>
       </CardHeader>
       <CardContent className="py-2 px-4">
         <dl className="grid gap-1">
           <div className="flex items-baseline justify-between">
             <dt className="text-sm text-gray-700 dark:text-gray-300">Workspaces:</dt>
-            <dd className="text-base font-bold">{stats.workspaceCount}</dd>
+            <dd className="text-base font-bold">
+              <AnimatedShinyText className={cn(
+                "text-base font-bold transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400"
+              )}>
+                {stats.workspaceCount}
+              </AnimatedShinyText>
+            </dd>
           </div>
 
           <div className="flex items-baseline justify-between">
             <dt className="text-sm text-gray-700 dark:text-gray-300">Projects:</dt>
-            <dd className="text-base font-bold">{stats.projectCount}</dd>
+            <dd className="text-base font-bold">
+              <AnimatedShinyText className={cn(
+                "text-base font-bold transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400"
+              )}>
+                {stats.projectCount}
+              </AnimatedShinyText>
+            </dd>
           </div>
 
           <div className="flex items-baseline justify-between">
             <dt className="text-sm text-gray-700 dark:text-gray-300">Members:</dt>
-            <dd className="text-base font-bold">{stats.memberCount}</dd>
+            <dd className="text-base font-bold">
+              <AnimatedShinyText className={cn(
+                "text-base font-bold transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400"
+              )}>
+                {stats.memberCount}
+              </AnimatedShinyText>
+            </dd>
           </div>
         </dl>
       </CardContent>
