@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import {
   Dialog,
   DialogContent,
@@ -118,7 +119,9 @@ export default function WorkspaceList() {
       <h2 className="text-3xl font-bold mb-6">Workspaces</h2>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="mb-8">New Workspace</Button>
+          <InteractiveHoverButton className="mb-8">
+            New Workspace
+          </InteractiveHoverButton>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -153,13 +156,11 @@ export default function WorkspaceList() {
                 <CardTitle className="text-xl">{workspace.name}</CardTitle>
               </CardHeader>
               <CardContent className="p-4 flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
+                <InteractiveHoverButton
                   onClick={() => router.push(`/workspaces/${workspace.id}`)}
                 >
                   View Projects
-                </Button>
+                </InteractiveHoverButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">

@@ -3,11 +3,11 @@
 import { useActionState } from "react";
 import { createProject } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
+import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
 
 interface CreateProjectFormProps {
   workspaceId: string;
@@ -24,13 +24,13 @@ export function CreateProjectForm({ workspaceId }: CreateProjectFormProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
-          <PlusCircledIcon className="h-4 w-4" /> Create New Project
-        </Button>
+        <InteractiveHoverButton className="flex items-center gap-2 mb-8">
+          New Project
+        </InteractiveHoverButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle>New Project</DialogTitle>
           <DialogDescription>
             Fill in the details for your new project.
           </DialogDescription>

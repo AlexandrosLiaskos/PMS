@@ -1,5 +1,4 @@
 import React from "react";
-import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const InteractiveHoverButton = React.forwardRef<
@@ -22,7 +21,6 @@ export const InteractiveHoverButton = React.forwardRef<
 
       <div className="absolute inset-0 flex items-center justify-center text-sm px-4 py-2 translate-x-[-100%] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 bg-black text-white">
         <span>{children}</span>
-        <ArrowLeft />
       </div>
     </button>
   );
