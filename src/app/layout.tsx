@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import AuthSessionProvider from "@/components/SessionProvider";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 
@@ -23,10 +24,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthSessionProvider session={session}>
-          <Navbar />
-          {children}
-        </AuthSessionProvider>
+        <ThemeProvider>
+          <AuthSessionProvider session={session}>
+            <Navbar />
+            {children}
+          </AuthSessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

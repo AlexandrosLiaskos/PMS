@@ -3,11 +3,11 @@
 import { useSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { User, Settings, LogOut } from "lucide-react";
+import { Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { ThemeSelector } from "@/components/ThemeSelector";
 
 export default function UserDetails() {
   const { data: session } = useSession();
@@ -40,27 +40,22 @@ export default function UserDetails() {
           </div>
         </div>
 
-        {/* Status Badge and Action Buttons */}
-        <div className="flex items-center justify-between">
-          <Badge variant="secondary" className="text-xs">
-            <User className="w-3 h-3 mr-1 text-black dark:text-white" />
-            Admin
-          </Badge>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" asChild className="h-7 w-7 p-0 flex items-center justify-center">
-              <Link href="/profile">
-                <Settings className="w-3.5 h-3.5" />
-              </Link>
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-7 w-7 p-0 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50"
-              onClick={() => signOut({ callbackUrl: "/" })}
-            >
-              <LogOut className="w-3.5 h-3.5" />
-            </Button>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex justify-center gap-2">
+          <ThemeSelector />
+          <Button variant="outline" size="sm" asChild className="h-7 w-7 p-0 flex items-center justify-center">
+            <Link href="/profile">
+              <Settings className="w-3.5 h-3.5" />
+            </Link>
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-7 w-7 p-0 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950"
+            onClick={() => signOut({ callbackUrl: "/" })}
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </Button>
         </div>
       </CardContent>
     </Card>

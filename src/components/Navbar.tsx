@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, LogOut } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -28,6 +29,7 @@ export function Navbar() {
         <Link href="/tasks">
           <Button variant="ghost">Tasks</Button>
         </Link>
+        <ThemeToggle />
         {status === "loading" ? (
           <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
         ) : session?.user ? (

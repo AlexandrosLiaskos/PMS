@@ -153,11 +153,11 @@ export default function WorkspaceList() {
   };
 
   if (loading) {
-    return <p>Loading workspaces...</p>;
+    return <p className="text-gray-600 dark:text-gray-400">Loading workspaces...</p>;
   }
 
   if (error) {
-    return <p className="text-red-500">Error: {error}</p>;
+    return <p className="text-red-500 dark:text-red-400">Error: {error}</p>;
   }
 
   return (
@@ -173,8 +173,8 @@ export default function WorkspaceList() {
               <div className="w-10 h-10 rounded-full bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center mb-3 transition-colors duration-200">
                 <Plus className="w-5 h-5 text-primary group-hover:scale-110 transition-transform duration-200" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-primary transition-colors duration-200">Create New Workspace</h3>
-              <p className="text-sm text-gray-500 group-hover:text-gray-600 transition-colors duration-200">Start organizing your projects in a new workspace</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-primary transition-colors duration-200">Create New Workspace</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors duration-200">Start organizing your projects in a new workspace</p>
             </CardContent>
           </Card>
         </DialogTrigger>
@@ -213,11 +213,11 @@ export default function WorkspaceList() {
 
       {workspaces.length === 0 ? (
         <div className="text-center py-12">
-          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-            <Building2 className="w-8 h-8 text-gray-400" />
+          <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4">
+            <Building2 className="w-8 h-8 text-gray-400 dark:text-gray-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No workspaces yet</h3>
-          <p className="text-gray-500 mb-4">Create your first workspace to start organizing your projects</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No workspaces yet</h3>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">Create your first workspace to start organizing your projects</p>
         </div>
       ) : (
         <div className="grid gap-4">
