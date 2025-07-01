@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,14 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { status } = useSession();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/home");
+    }
+  }, [status, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,13 +37,13 @@ export function LoginForm() {
 
       if (result?.error) {
         setError("Invalid credentials");
-      } else {
-        router.push("/");
-        router.refresh();
+        setIsLoading(false);
+      } else if (result?.ok) {
+        // Successful login - the useEffect will handle the redirect
+        // Don't set loading to false here, let the redirect happen
       }
     } catch (error) {
       setError("An error occurred during login");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -71,7 +80,7 @@ export function LoginForm() {
       </Button>
       <p className="mt-4 text-center text-sm text-gray-600">
         Don&apos;t have an account?{" "}
-        <a href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+        <a href="/register" className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
           Sign up
         </a>
       </p>

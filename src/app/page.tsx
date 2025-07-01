@@ -12,7 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/home");
+      router.replace("/home");
     }
   }, [status, router]);
 
@@ -25,7 +25,11 @@ export default function Home() {
   }
 
   if (status === "authenticated") {
-    return null; // Redirecting
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center p-24">
+        <h1 className="text-4xl font-bold">Redirecting...</h1>
+      </main>
+    );
   }
 
   return (

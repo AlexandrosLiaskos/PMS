@@ -39,22 +39,24 @@ export function ProjectSidebar({
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p className="text-sm text-gray-600">{project.description || "No description provided."}</p>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="flex flex-col">
-              <span className="font-semibold">Created:</span>
-              <span>{formattedDate}</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold">Members:</span>
-              <span>{members.length}</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold">Tasks:</span>
-              <span>{tasksCount}</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold">Events:</span>
-              <span>{eventsCount}</span>
+          <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+            <div className="grid grid-cols-2 text-sm">
+              <div className="flex justify-between items-center p-2 border-b border-r border-gray-200 dark:border-gray-700">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">Created:</span>
+                <span className="text-gray-600 dark:text-gray-400">{formattedDate}</span>
+              </div>
+              <div className="flex justify-between items-center p-2 border-b border-gray-200 dark:border-gray-700">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">Members:</span>
+                <span className="text-gray-600 dark:text-gray-400">{members.length}</span>
+              </div>
+              <div className="flex justify-between items-center p-2 border-r border-gray-200 dark:border-gray-700">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">Tasks:</span>
+                <span className="text-gray-600 dark:text-gray-400">{tasksCount}</span>
+              </div>
+              <div className="flex justify-between items-center p-2">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">Events:</span>
+                <span className="text-gray-600 dark:text-gray-400">{eventsCount}</span>
+              </div>
             </div>
           </div>
           <div className="flex flex-col items-center">

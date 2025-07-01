@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import { db } from "@/db/turso";
 import { workspaces, users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request, { params }: { params: Promise<{ workspaceId: string }> }) {
@@ -53,8 +53,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ work
   try {
     const [updatedWorkspace] = await db.update(workspaces)
       .set({ name })
-      .where(eq(workspaces.id, workspaceId))
-      .where(eq(workspaces.userId, user.id))
+      .where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)))
       .returning();
 
     if (!updatedWorkspace) {
@@ -85,8 +84,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ w
 
   try {
     const [deletedWorkspace] = await db.delete(workspaces)
-      .where(eq(workspaces.id, workspaceId))
-      .where(eq(workspaces.userId, user.id))
+      .where(and(eq(workspaces.id, workspaceId), eq(workspaces.userId, user.id)))
       .returning();
 
     if (!deletedWorkspace) {

@@ -5,7 +5,6 @@ import { users } from "@/db/schema";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
 
 export async function register(prevState: { error: string, success: boolean }, formData: FormData) {
   const name = formData.get("name") as string;
@@ -42,7 +41,10 @@ export async function createProject(prevState: { error: string, success: boolean
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/workspaces/${workspaceId}/projects`, {
+    // Ensure the URL is absolute; if no base URL is provided, assume local development
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const url = `${baseUrl}/api/workspaces/${workspaceId}/projects`;
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,7 +76,10 @@ export async function updateProject(prevState: { error: string, success: boolean
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/workspaces/${workspaceId}/projects/${projectId}`, {
+    // Ensure the URL is absolute; if no base URL is provided, assume local development
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const url = `${baseUrl}/api/workspaces/${workspaceId}/projects/${projectId}`;
+    const response = await fetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -104,7 +109,10 @@ export async function deleteProject(prevState: { error: string, success: boolean
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/workspaces/${workspaceId}/projects/${projectId}`, {
+    // Ensure the URL is absolute; if no base URL is provided, assume local development
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const url = `${baseUrl}/api/workspaces/${workspaceId}/projects/${projectId}`;
+    const response = await fetch(url, {
       method: "DELETE",
     });
 

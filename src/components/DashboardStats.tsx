@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
-import { BorderBeam } from "@/components/magicui/border-beam";
-import { cn } from "@/lib/utils";
+import { Building2, FolderOpen, Users, TrendingUp } from "lucide-react";
+import { NumberTicker } from "@/components/magicui/number-ticker";
 
 export default function DashboardStats() {
   useSession();
@@ -58,13 +57,13 @@ export default function DashboardStats() {
 
   if (loading) {
     return (
-      <Card className="w-full mb-8 bg-gradient-to-br from-background via-background to-muted/20 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 rounded-none relative">
-        <BorderBeam colorFrom="#3B82F6" colorTo="#8B5CF6" borderWidth={2} size={100} duration={5} style={{ zIndex: 1000 }} />
-        <CardHeader>
-          <CardTitle>Loading Dashboard Stats...</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>Fetching your personal and workspace statistics.</p>
+      <Card className="w-full mb-6 border border-border/50 shadow-sm">
+        <CardContent className="p-4">
+          <div className="animate-pulse space-y-3">
+            <div className="h-4 bg-muted rounded w-3/4"></div>
+            <div className="h-4 bg-muted rounded w-1/2"></div>
+            <div className="h-4 bg-muted rounded w-2/3"></div>
+          </div>
         </CardContent>
       </Card>
     );
@@ -72,58 +71,59 @@ export default function DashboardStats() {
 
   if (error) {
     return (
-      <Card className="w-full mb-8 bg-gradient-to-br from-background via-background to-muted/20 backdrop-blur-sm border-2 border-border/50 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 hover:border-primary/50">
-        <CardHeader>
-          <CardTitle className="text-red-500">Error Loading Stats</CardTitle>
+      <Card className="w-full mb-6 border border-red-200 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium text-red-600">Error</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>{error}</p>
+          <p className="text-xs text-red-500">{error}</p>
         </CardContent>
       </Card>
     );
   }
 
-    return (
-      <Card className="w-full mb-6 bg-gradient-to-br from-background via-background to-muted/20 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-200 rounded-none relative">
-        <BorderBeam colorFrom="#3B82F6" colorTo="#8B5CF6" borderWidth={2} size={100} duration={5} style={{ zIndex: 1000 }} />
-        <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Statistics</CardTitle>
-      </CardHeader>
-      <CardContent className="py-2 px-4">
-        <dl className="grid gap-1">
-          <div className="flex items-baseline justify-between">
-            <dt className="text-sm text-gray-700 dark:text-gray-300">Workspaces:</dt>
-            <dd className="text-base font-bold">
-              <AnimatedShinyText className={cn(
-                "text-base font-bold transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400"
-              )}>
-                {stats.workspaceCount}
-              </AnimatedShinyText>
-            </dd>
-          </div>
+  const statItems = [
+    {
+      label: "Workspaces",
+      value: stats.workspaceCount,
+      icon: Building2,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+    },
+    {
+      label: "Projects", 
+      value: stats.projectCount,
+      icon: FolderOpen,
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+    },
+    {
+      label: "Members",
+      value: stats.memberCount,
+      icon: Users,
+      color: "text-purple-600", 
+      bgColor: "bg-purple-50",
+    },
+  ];
 
-          <div className="flex items-baseline justify-between">
-            <dt className="text-sm text-gray-700 dark:text-gray-300">Projects:</dt>
-            <dd className="text-base font-bold">
-              <AnimatedShinyText className={cn(
-                "text-base font-bold transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400"
-              )}>
-                {stats.projectCount}
-              </AnimatedShinyText>
-            </dd>
-          </div>
-
-          <div className="flex items-baseline justify-between">
-            <dt className="text-sm text-gray-700 dark:text-gray-300">Members:</dt>
-            <dd className="text-base font-bold">
-              <AnimatedShinyText className={cn(
-                "text-base font-bold transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400"
-              )}>
-                {stats.memberCount}
-              </AnimatedShinyText>
-            </dd>
-          </div>
-        </dl>
+  return (
+    <Card className="w-full mb-6 border border-border/50 shadow-sm hover:shadow-md transition-all duration-200">
+      <CardContent className="p-0">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+          {statItems.map((item, index) => (
+            <div key={item.label} className="flex items-center justify-between px-4 py-2 hover:bg-muted/30 transition-colors">
+              <div className="flex items-center space-x-2">
+                <div className={`p-1 rounded-md ${item.bgColor}`}>
+                  <item.icon className={`w-3 h-3 text-black dark:text-white`} />
+                </div>
+                <span className="text-xs font-medium text-muted-foreground">{item.label}</span>
+              </div>
+              <div className="text-sm font-bold text-foreground">
+                <NumberTicker value={item.value} />
+              </div>
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

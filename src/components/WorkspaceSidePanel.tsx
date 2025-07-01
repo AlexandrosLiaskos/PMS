@@ -58,7 +58,7 @@ export function WorkspaceSidePanel({ workspaceId, workspaceName }: WorkspaceSide
                 </AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-1 -right-1 p-1 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full">
-                <Crown className="h-3 w-3 text-white" />
+                <Crown className="h-3 w-3 text-black dark:text-white" />
               </div>
             </div>
             <div className="flex-1">
@@ -71,7 +71,7 @@ export function WorkspaceSidePanel({ workspaceId, workspaceName }: WorkspaceSide
         <CardContent className="pt-0">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <div className="flex items-center space-x-1">
-              <User className="h-3 w-3" />
+              <User className="h-3 w-3 text-black dark:text-white" />
               <span>Admin</span>
             </div>
             <div className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
