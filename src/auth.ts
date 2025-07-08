@@ -23,7 +23,7 @@ const authOptions = {
         const [user] = await db
           .select()
           .from(users)
-          .where(eq(users.email, credentials.email as string));
+          .where(eq(users.email, (credentials.email as string).toLowerCase()));
 
         if (!user) {
           return null;

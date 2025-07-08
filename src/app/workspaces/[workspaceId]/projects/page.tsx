@@ -51,7 +51,7 @@ export default async function ProjectsPage({ params }: ProjectsPageProps) {
       {workspaceProjects.length === 0 ? (
         <p className="text-center text-lg">No projects found for this workspace. Create one below!</p>
       ) : (
-        <ProjectList projects={workspaceProjects} />
+        <ProjectList projects={workspaceProjects} workspaceId={workspaceId} />
       )}
       <div className="flex flex-col items-center mt-8">
         <CreateProjectForm workspaceId={workspaceId} />

@@ -22,7 +22,7 @@ interface WorkspaceDetails {
 
 import React from "react";
 
-export default function WorkspacePageContent({ params }: { params: { workspaceId: string | Promise<string> } }) {
+export default function WorkspacePageContent({ params }: { params: Promise<{ workspaceId: string }> }) {
   const resolvedParams = React.use(params);
   const { workspaceId } = resolvedParams;
   const { status } = useSession();
@@ -103,7 +103,7 @@ export default function WorkspacePageContent({ params }: { params: { workspaceId
         </div>
         <div className="w-full max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold mb-4">Projects</h2>
-          <ProjectList projects={projects} />
+          <ProjectList projects={projects} workspaceId={workspaceId} />
         </div>
       </main>
     </div>

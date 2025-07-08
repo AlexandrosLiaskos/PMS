@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import AuthSessionProvider from "@/components/SessionProvider";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 
@@ -26,8 +27,10 @@ export default async function RootLayout({
       <body className={inter.className}>
         <ThemeProvider>
           <AuthSessionProvider session={session}>
-            <Navbar />
-            {children}
+            <ErrorBoundary>
+              <Navbar />
+              {children}
+            </ErrorBoundary>
           </AuthSessionProvider>
         </ThemeProvider>
       </body>
